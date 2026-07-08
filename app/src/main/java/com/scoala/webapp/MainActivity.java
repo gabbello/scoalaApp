@@ -5,6 +5,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String START_URL = "https://www.scoala.ro/";
@@ -18,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
         chromeIntent.addCategory(Intent.CATEGORY_BROWSABLE);
         chromeIntent.setPackage("com.android.chrome");
         chromeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        chromeIntent.putExtra("com.android.chrome.extra.TABS", true);
+        chromeIntent.putExtra("create_new_tab", false);
+        chromeIntent.putExtra("from_app", true);
 
         try {
             startActivity(chromeIntent);
