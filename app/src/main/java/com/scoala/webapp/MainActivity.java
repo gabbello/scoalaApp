@@ -8,6 +8,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -56,6 +57,11 @@ public class MainActivity extends AppCompatActivity {
                 super.onPageFinished(view, url);
                 swipeRefreshLayout.setRefreshing(false);
                 CookieManager.getInstance().flush();
+
+                String info = "UA=" + view.getSettings().getUserAgentString() + "\n" +
+                        "WebView=" + android.os.Build.VERSION.RELEASE + "\n" +
+                        "SDK=" + android.os.Build.VERSION.SDK_INT;
+                Toast.makeText(MainActivity.this, info, Toast.LENGTH_LONG).show();
             }
         });
 
