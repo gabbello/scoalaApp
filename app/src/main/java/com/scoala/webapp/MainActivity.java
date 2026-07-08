@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.ArrayList;
-import java.util.List;
+import androidx.browser.customtabs.CustomTabsIntent;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,16 +15,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent chromeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(START_URL));
-        chromeIntent.addCategory(Intent.CATEGORY_BROWSABLE);
-        chromeIntent.setPackage("com.android.chrome");
-        chromeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        chromeIntent.putExtra("com.android.chrome.extra.TABS", true);
-        chromeIntent.putExtra("create_new_tab", false);
-        chromeIntent.putExtra("from_app", true);
+        CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
+                .setShowTitle(false)
+                .setUrlBarHidingEnabled(true)
+                .setShareState(CustomTabsIntent.SHARE_STATE_OFF)
+                .build();
+        customTabsIntent.intent.setPackage("com.android.chrome");
+        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         try {
-            startActivity(chromeIntent);
+            customTabsIntent.launchUrl(this, Uri.parse(START_URL));
         } catch (Exception e) {
             Intent fallbackIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(START_URL));
             fallbackIntent.addCategory(Intent.CATEGORY_BROWSABLE);
