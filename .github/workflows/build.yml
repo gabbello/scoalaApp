@@ -5,6 +5,9 @@ on:
   push:
     branches: [ main, master ]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,8 +26,26 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Extract app version
+        id: version
+        run: |
+          VERSION_NAME=$(grep -oP 'versionName\s+"[^"]+"' app/build.gradle | head -1 | cut -d'"' -f2)
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Rename APK with version
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk "app/build/outputs/apk/debug/ScoalaApp-${{ steps.version.outputs.version_name }}.apk"
+
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ScoalaApp-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: ScoalaApp-${{ steps.version.outputs.version_name }}-debug-apk
+          path: app/build/outputs/apk/debug/ScoalaApp-${{ steps.version.outputs.version_name }}.apk
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version_name }}
+          name: ScoalaApp v${{ steps.version.outputs.version_name }}
+          overwrite_files: true
+          files: app/build/outputs/apk/debug/ScoalaApp-${{ steps.version.outputs.version_name }}.apk
