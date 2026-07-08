@@ -15,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Change this if you ever need to point the app at a different URL/subpage.
     private static final String START_URL = "https://www.scoala.ro/";
+    private static final String MODERN_USER_AGENT =
+            "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36";
 
     private WebView webView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -38,7 +40,10 @@ public class MainActivity extends AppCompatActivity {
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setUserAgentString(settings.getUserAgentString() + " ScoalaApp/1.0");
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        settings.setUserAgentString(MODERN_USER_AGENT);
 
         // Persist cookies/session across app restarts
         CookieManager cookieManager = CookieManager.getInstance();
