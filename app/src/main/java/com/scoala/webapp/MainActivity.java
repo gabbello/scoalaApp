@@ -3,8 +3,9 @@ package com.scoala.webapp;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,16 +16,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
-                .setShowTitle(false)
-                .setUrlBarHidingEnabled(true)
-                .setShareState(CustomTabsIntent.SHARE_STATE_OFF)
-                .build();
-        customTabsIntent.intent.setPackage("com.android.chrome");
-        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        Intent chromeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(START_URL));
+        chromeIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+        chromeIntent.setPackage("com.android.chrome");
+        chromeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         try {
-            customTabsIntent.launchUrl(this, Uri.parse(START_URL));
+            startActivity(chromeIntent);
         } catch (Exception e) {
             Intent fallbackIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(START_URL));
             fallbackIntent.addCategory(Intent.CATEGORY_BROWSABLE);
