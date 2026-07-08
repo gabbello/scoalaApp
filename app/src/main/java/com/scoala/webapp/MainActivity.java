@@ -2,6 +2,8 @@ package com.scoala.webapp;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.KeyEvent;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
@@ -62,6 +64,30 @@ public class MainActivity extends AppCompatActivity {
                         "WebView=" + android.os.Build.VERSION.RELEASE + "\n" +
                         "SDK=" + android.os.Build.VERSION.SDK_INT;
                 Toast.makeText(MainActivity.this, info, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                    if (url.contains("scoala.ro") || url.contains("www.scoala.ro")) {
+                        return false;
+                    }
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                Toast.makeText(MainActivity.this, "WebView error: " + description, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(START_URL));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
             }
         });
 
